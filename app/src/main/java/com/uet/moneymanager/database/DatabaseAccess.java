@@ -117,7 +117,7 @@ public class DatabaseAccess {
             while  (!c.isAfterLast()) {
                 int id = c.getInt(c.getColumnIndex("id"));
                 int amount = c.getInt(c.getColumnIndex("amount"));
-                String note = c.getString(c.getColumnIndex("date"));
+                String note = c.getString(c.getColumnIndex("note"));
                 int groupId = c.getInt(c.getColumnIndex("group_id"));
                 Date date = Format.timestampToDate(c.getLong(c.getColumnIndex("date")));
                 lst.add(new Transaction(id, amount, getGroupById(groupId), note, date));
@@ -129,20 +129,6 @@ public class DatabaseAccess {
         }
     }
 
-
-//    public void insertTransaction(Transaction transaction) {
-//        //System.out.println("Deleting ads that is marked as to be deleted..");
-//        SQLiteDatabase db = sqLiteOpenHelper.getWritableDatabase();
-//        db.execSQL(getInsertQuery(TABLE_TRANSACTION, prepareInsertIntoTableTransaction((int)transaction.getMoneyAmount(), transaction.getGroup().getId(), transaction.getNote(), transaction.getDate().getTime(), transaction.getWalletType())));
-//        long currentMoney = getCurrentMoney(transaction.getWalletType());
-//        if (transaction.getWalletType() == WalletType.BANK_CARD) {
-//            db.execSQL(getUpdatePropertiesQuery(PROPERTIES_CURRENT_MONEY_AMOUNT_BANK_CARD, String.valueOf((currentMoney + (long) transaction.getMoneyAmount()))));
-//        } else {
-//            db.execSQL(getUpdatePropertiesQuery(PROPERTIES_CURRENT_MONEY_AMOUNT_NORMAL, String.valueOf((currentMoney + (long) transaction.getMoneyAmount()))));
-//        }
-//
-//    }
-
     public void insertTransaction(Transaction transaction) {
         ContentValues values = new ContentValues();
         values.put("amount",transaction.getAmount());
@@ -153,12 +139,13 @@ public class DatabaseAccess {
     }
 
     public void updateTransaction(Transaction transaction) {
+        open();
         ContentValues values = new ContentValues();
         values.put("amount",transaction.getAmount());
         values.put("note",transaction.getNote());
         values.put("date", transaction.getDate().getTime());
         values.put("group_id",transaction.getTransactionGroup().getId());
-        database.update("Transactions",values,"id = " + transaction.getId(), null);
+        database.update("Transactions",values,"id = " + transaction.getId(),null);
     }
 
     public void deleteTransaction(Transaction transaction) {

@@ -82,6 +82,7 @@ public class TransactionDetailActivity extends AppCompatActivity implements View
             assert data != null;
             Transaction transaction = (Transaction) Objects.requireNonNull(data.getExtras()).getSerializable("result");
             assert transaction != null;
+
             databaseAccess.updateTransaction(transaction);
 
             tvTransDetailDate.setText(DateUtil.formatDate(transaction.getDate()));
